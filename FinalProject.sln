@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdressBook", "AdressBook\AdressBook.csproj", "{91CAC1D4-E8F1-4D29-B02C-FD6ED59AE68C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdressBook", "AdressBook\AdressBook.csproj", "{91CAC1D4-E8F1-4D29-B02C-FD6ED59AE68C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdressBook.Tests", "AdressBook.Tests\AdressBook.Tests.csproj", "{EA0DEC1D-9229-4B3E-A9F3-561715029B1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{91CAC1D4-E8F1-4D29-B02C-FD6ED59AE68C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91CAC1D4-E8F1-4D29-B02C-FD6ED59AE68C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91CAC1D4-E8F1-4D29-B02C-FD6ED59AE68C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA0DEC1D-9229-4B3E-A9F3-561715029B1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA0DEC1D-9229-4B3E-A9F3-561715029B1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA0DEC1D-9229-4B3E-A9F3-561715029B1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA0DEC1D-9229-4B3E-A9F3-561715029B1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

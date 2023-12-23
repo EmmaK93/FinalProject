@@ -8,6 +8,7 @@ namespace AdressBook.Services;
 internal class MenuService : IMenuService
 {
     private readonly IPersonService _personService = new PersonService();
+    private readonly IPerson _person = new Person();
     
     
     internal void TitleMenu(string Title)
@@ -111,13 +112,13 @@ internal class MenuService : IMenuService
     {
         TitleMenu("Remove a person from list");
         
-        var person = new Person();
+       
 
             Console.Write("Enter E-mail:");
             string email = Console.ReadLine()!;
-        if (email.Equals(person.Email))
+        if (email.Equals(_person.Email))
         {
-            var result = _personService.DeletePersonFromList(person);
+            var result = _personService.DeletePersonFromList(_person);
         }
         else
         {
@@ -132,17 +133,29 @@ internal class MenuService : IMenuService
 
     private void ShowOneMenu()
     {
-        IPerson person = new Person();
+        
         Console.WriteLine("Write email");
         string email = Console.ReadLine()!;
-        if (email.Equals(person.Email))
+
+        if (email.Equals(_person.Email))
         {
             var result = _personService.ShowOnePersonFromList(email);
+            
+            if (result.Status == Enums.ResultStatus.SUCCEEDED)
+            {              
+                    Console.WriteLine($"{_person.FirstName}{_person.LastName}{_person.Email}{_person.PhoneNumber}{_person.CityName}");
+                
+
+            }
+
+
         }
+       
         else
         {
             Console.WriteLine("Email adress does not exist");
         }
+
 
         PressAnyKey();
 

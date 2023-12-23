@@ -2,14 +2,20 @@
 using AdressBook.Interfaces;
 using AdressBook.Models;
 using AdressBook.Models.Responses;
+using Newtonsoft.Json;
+using System;
 using System.Diagnostics;
 using System.Linq;
+
+
+
 
 namespace AdressBook.Services;
 
 internal class PersonService : IPersonService
 {
-    private static readonly List<IPerson> _person = [];
+    private static List<IPerson> _personList= [];
+    private readonly FileService _fileService = new FileService(@"C:\Education\CSharp\FinalProject\content.json");
 
  
         
@@ -19,10 +25,11 @@ internal class PersonService : IPersonService
        
         try
         {
-            if (!(_person.Any(X => X.Email == person.Email)))
+            if (!(_personList.Any(X => X.Email == person.Email)))
             {
-                _person.Add(person);
-                Console.WriteLine("Person added to list");
+                _personList.Add(person);
+
+                _fileService.SaveContentToFile(JsonConvert.SerializeObject(_personList));
 
                 respons.Status = Enums.ResultStatus.SUCCEEDED;
                 
@@ -54,9 +61,9 @@ internal class PersonService : IPersonService
         IServiceResult respons = new ServiceResult();
         try
         {
-            if (_person.Any(X => X.Email == person.Email))
+            if (_personList.Any(X => X.Email == person.Email))
             {
-                _person.Remove(person);
+                _personList.Remove(person);
                 Console.WriteLine("Person removed from list.");
                 respons.Status = Enums.ResultStatus.DELETED;
             }
@@ -73,18 +80,47 @@ internal class PersonService : IPersonService
         return respons;
 
     }
+    public IEnumerable<IPerson> GetAllPersons()
+    {
+        IServiceResult respons = new ServiceResult();
+        try
+        {
+            
+            
+            var content = _fileService.GetContentFromFile();
+            if (!string.IsNullOrEmpty(content)) 
+            {
+                _personList = JsonConvert.DeserializeObject<List<IPerson>>(content)!;
+                respons.Status = Enums.ResultStatus.SUCCEEDED;
+            }
 
+            else
+                Console.WriteLine("E-mail adress was not found.");
+                respons.Status = Enums.ResultStatus.NOT_FOUND;
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            respons.Status = Enums.ResultStatus.FAILED;
+        }
+        return _personList;
+        
+
+    }
     public IServiceResult ShowAllPersonsFromList()
     {
         IServiceResult respons = new ServiceResult();
         
         try
         {
-            foreach (var item in _person)
+            foreach (var item in _personList)
             {
                 respons.Status = Enums.ResultStatus.SUCCEEDED;
-                respons.Result = _person;
+                respons.Result = _personList;
             }
+            
+            GetAllPersons();
             
         }
         catch (Exception ex)
@@ -100,22 +136,26 @@ internal class PersonService : IPersonService
     {
         IServiceResult respons = new ServiceResult();
         try
-        {     
-            var person = new Person();
-            if (_person.Any(X => X.Email == person.Email))
+        {
+            var content = _fileService.GetContentFromFile();
+            
+            
+            if ((!string.IsNullOrEmpty(content)))
             {
-                Console.WriteLine(person);
+                _personList = JsonConvert.DeserializeObject<List<IPerson>>(content)!;
                 respons.Status = Enums.ResultStatus.SUCCEEDED;
+                
                 
             }
 
             else
                 Console.WriteLine("E-mail adress was not found.");
-            respons.Status = Enums.ResultStatus.NOT_FOUND;
-            
+                respons.Status = Enums.ResultStatus.NOT_FOUND;
+
+
         }
-        catch (Exception ex) 
-        { 
+        catch (Exception ex)
+        {
             Debug.WriteLine(ex.Message);
             respons.Status = Enums.ResultStatus.FAILED;
         }
