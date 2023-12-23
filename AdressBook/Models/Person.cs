@@ -1,12 +1,16 @@
-﻿namespace AdressBook.Models;
+﻿using AdressBook.Interfaces;
 
-internal class Person
+namespace AdressBook.Models;
+
+public class Person : IPerson
 {
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
-
-    public AdressInfo Adress { get; set; } = null!;
-    public ContactInfo Contact { get; set; } = null!;
+    public string Email { get; set; } = null!;
+    public int? PhoneNumber { get; set; }
+    public string? StreetName { get; set; }
+    public int? PostalCode { get; set; }
+    public string CityName { get; set; } = null!;
 
 
 }

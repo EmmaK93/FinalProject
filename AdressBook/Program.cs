@@ -1,5 +1,6 @@
-﻿using AdressBook.Services;
+﻿using AdressBook.Interfaces;
+using AdressBook.Services;
 
-var menuService = new MenuService();
+IMenuService menuService = new MenuService();
 
 menuService.MainMenu();

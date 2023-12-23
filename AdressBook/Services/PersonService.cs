@@ -1,56 +1,125 @@
-﻿using AdressBook.Models;
+﻿using AdressBook.Enums;
+using AdressBook.Interfaces;
+using AdressBook.Models;
+using AdressBook.Models.Responses;
+using System.Diagnostics;
+using System.Linq;
 
 namespace AdressBook.Services;
 
-internal class PersonService
+internal class PersonService : IPersonService
 {
-    private readonly List<Person> _person = [];
+    private static readonly List<IPerson> _person = [];
 
-    public void AddPersonToList(Person person)
-    {
-        if (!(_person.Any(X => X.Contact == person.Contact)))
-        {
-            _person.Add(person);
-            Console.WriteLine("Person added to list");
-        }
-        else
-            Console.WriteLine("E-mail adress already exists");
+ 
         
-    }
-    public Person GetPersonFromList(Person person)
+    public IServiceResult AddPersonToList(IPerson person)
     {
-        var input = _person.FirstOrDefault(x => x.Contact == person.Contact);
-        return person ??= null!;
-    }
-
-    public void DeletePersonFromList(Person person)
-    {
-        if ((_person.Any(X => X.Contact == person.Contact)))
+        IServiceResult respons = new ServiceResult();
+       
+        try
         {
-            _person.Remove(person);
-            Console.WriteLine("Person removed from list.");
+            if (!(_person.Any(X => X.Email == person.Email)))
+            {
+                _person.Add(person);
+                Console.WriteLine("Person added to list");
+
+                respons.Status = Enums.ResultStatus.SUCCEEDED;
+                
+                   
+                
+            }
+            else
+            {
+                Console.WriteLine("E-mail adress already exists");
+
+                respons.Status = Enums.ResultStatus.ALREADY_EXIST;
+
+            }
+                
+            
+            
         }
-        else
-            Console.WriteLine("E-mail adress was not found.");
+        catch (Exception ex) 
+        {
+            Debug.WriteLine(ex.Message); 
+            respons.Status= Enums.ResultStatus.FAILED;
+        }
+        
+        return respons;
     }
 
-    public void ShowAllPersonsFromList()
+    public IServiceResult DeletePersonFromList(IPerson person)
     {
-        foreach (var person in _person)
+        IServiceResult respons = new ServiceResult();
+        try
         {
-            Console.WriteLine($"{person.FirstName}{person.LastName}{person.Contact}{person.Adress}");
+            if (_person.Any(X => X.Email == person.Email))
+            {
+                _person.Remove(person);
+                Console.WriteLine("Person removed from list.");
+                respons.Status = Enums.ResultStatus.DELETED;
+            }
+            else
+                Console.WriteLine("E-mail adress was not found.");
+            respons.Status = Enums.ResultStatus.NOT_FOUND;
+
         }
+        catch (Exception ex) 
+        { 
+            Debug.WriteLine(ex.Message);
+            respons.Status = Enums.ResultStatus.FAILED;
+        }
+        return respons;
+
     }
 
-    public void ShowOnePersonFromList(Person person)
+    public IServiceResult ShowAllPersonsFromList()
     {
-        if ((_person.Any(X => X.Contact == person.Contact)))
+        IServiceResult respons = new ServiceResult();
+        
+        try
         {
-            Console.WriteLine(person);
+            foreach (var item in _person)
+            {
+                respons.Status = Enums.ResultStatus.SUCCEEDED;
+                respons.Result = _person;
+            }
+            
         }
+        catch (Exception ex)
+        { 
+            Debug.WriteLine(ex.Message);
+            respons.Status = Enums.ResultStatus.FAILED;
+        }
+        return respons;
 
-        else
-            Console.WriteLine("E-mail adress was not found.");
+    }
+
+    public IServiceResult ShowOnePersonFromList(string email)
+    {
+        IServiceResult respons = new ServiceResult();
+        try
+        {     
+            var person = new Person();
+            if (_person.Any(X => X.Email == person.Email))
+            {
+                Console.WriteLine(person);
+                respons.Status = Enums.ResultStatus.SUCCEEDED;
+                
+            }
+
+            else
+                Console.WriteLine("E-mail adress was not found.");
+            respons.Status = Enums.ResultStatus.NOT_FOUND;
+            
+        }
+        catch (Exception ex) 
+        { 
+            Debug.WriteLine(ex.Message);
+            respons.Status = Enums.ResultStatus.FAILED;
+        }
+        return respons;
     }
 }
 
