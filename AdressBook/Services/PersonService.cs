@@ -6,6 +6,10 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
+using System.Text.Json;
+using static System.Net.Mime.MediaTypeNames;
 
 
 
@@ -56,20 +60,31 @@ internal class PersonService : IPersonService
         return respons;
     }
 
-    public IServiceResult DeletePersonFromList(IPerson person)
+    public IServiceResult DeletePersonFromList(string email)
     {
         IServiceResult respons = new ServiceResult();
+        
         try
         {
-            if (_personList.Any(X => X.Email == person.Email))
+            var content = _fileService.GetContentFromFile();
+
+            GetAllPersons();
+
+            bool removed = false;
+            for (int i = 0; i < _personList.Count; i++)
             {
-                _personList.Remove(person);
-                Console.WriteLine("Person removed from list.");
-                respons.Status = Enums.ResultStatus.DELETED;
+                if (_personList[i].Email == email)
+                {
+                    _personList.RemoveAt(i);
+                    Console.WriteLine("Personen har tagits bort från adressboken.");
+                    removed = true;
+                }
+                if (!removed)
+                {
+                    Console.WriteLine("Det finns ingen person med den mejladressen i adressboken.");
+                }
             }
-            else
-                Console.WriteLine("E-mail adress was not found.");
-            respons.Status = Enums.ResultStatus.NOT_FOUND;
+
 
         }
         catch (Exception ex) 
@@ -95,7 +110,7 @@ internal class PersonService : IPersonService
             }
 
             else
-                Console.WriteLine("E-mail adress was not found.");
+                Console.WriteLine("The list is empty");
                 respons.Status = Enums.ResultStatus.NOT_FOUND;
 
         }
@@ -114,13 +129,14 @@ internal class PersonService : IPersonService
         
         try
         {
+            GetAllPersons();
             foreach (var item in _personList)
             {
                 respons.Status = Enums.ResultStatus.SUCCEEDED;
                 respons.Result = _personList;
             }
             
-            GetAllPersons();
+            
             
         }
         catch (Exception ex)
@@ -135,23 +151,29 @@ internal class PersonService : IPersonService
     public IServiceResult ShowOnePersonFromList(string email)
     {
         IServiceResult respons = new ServiceResult();
+        
         try
         {
             var content = _fileService.GetContentFromFile();
-            
-            
-            if ((!string.IsNullOrEmpty(content)))
+
+            GetAllPersons();
+
+            bool personToFind = false;
+            foreach (Person person in _personList)
             {
-                _personList = JsonConvert.DeserializeObject<List<IPerson>>(content)!;
-                respons.Status = Enums.ResultStatus.SUCCEEDED;
-                
-                
+                if (person.Email == email)
+                {
+
+                    respons.Result = _personList;
+                    personToFind = true;
+                }
+                if (!personToFind)
+                {
+                    Console.WriteLine("Det finns ingen person med den mejladressen i adressboken.");
+                }
+
             }
-
-            else
-                Console.WriteLine("E-mail adress was not found.");
-                respons.Status = Enums.ResultStatus.NOT_FOUND;
-
+                
 
         }
         catch (Exception ex)

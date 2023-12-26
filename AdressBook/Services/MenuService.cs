@@ -73,17 +73,27 @@ internal class MenuService : IMenuService
 
         Console.WriteLine("First name:");
         person.FirstName = Console.ReadLine()!;
-        Console.WriteLine("\n Last name:");
+        Console.WriteLine("\nLast name:");
         person.LastName = Console.ReadLine()!;
-        Console.WriteLine("\n E-mail:");
+        Console.WriteLine("\nE-mail:");
         person.Email = Console.ReadLine()!; 
-        Console.WriteLine("\n Phone number:");
-        person.PhoneNumber = int.Parse(Console.ReadLine()!); //Kolla upp TryParse
-        Console.WriteLine("\n Street name:");
+        Console.WriteLine("\nPhone number:");
+        bool _number = int.TryParse(Console.ReadLine()!, out int _numberConvert);
+        if (_number == true)
+        {
+            var postal = _number.ToString();
+            person.PhoneNumber = _numberConvert;
+        }
+        Console.WriteLine("\nStreet name:");
         person.StreetName = Console.ReadLine()!;
-        Console.WriteLine("\n Postal code:");
-        person.PostalCode = int.Parse(Console.ReadLine()!); //Kolla upp TryParse
-        Console.WriteLine("\n City name:");
+        Console.WriteLine("\nPostal code:");
+        bool _postal = int.TryParse(Console.ReadLine()!, out int _postalConvert);
+        if (_postal == true) 
+        {
+           var postal= _postal.ToString();
+            person.PostalCode = _postalConvert;
+        }
+        Console.WriteLine("\nCity name:");
         person.CityName = Console.ReadLine()!;
 
         var result = _personService.AddPersonToList(person);
@@ -110,19 +120,30 @@ internal class MenuService : IMenuService
 
     private void RemoveMenu()
     {
-        TitleMenu("Remove a person from list");
         
-       
+        TitleMenu("Remove a person from list");
+        Console.Write("Enter E-mail:");
+        string email = Console.ReadLine()!;
+        var result = _personService.DeletePersonFromList(email);
 
-            Console.Write("Enter E-mail:");
-            string email = Console.ReadLine()!;
-        if (email.Equals(_person.Email))
+        switch (result.Status)
         {
-            var result = _personService.DeletePersonFromList(_person);
-        }
-        else
-        {
-            Console.WriteLine("Email adress does not exist");
+            case Enums.ResultStatus.SUCCEEDED:
+                Console.WriteLine("##Person deleted from list##");
+                               
+                break;
+            case Enums.ResultStatus.FAILED:
+                Console.WriteLine("##Failed##");
+                
+                break;
+            case Enums.ResultStatus.ALREADY_EXIST:
+                Console.WriteLine("##Person already exist##");
+                
+                break;
+            default:
+                Console.WriteLine("##Something went wrong, try again!##");
+                
+                break;
         }
 
 
@@ -133,29 +154,40 @@ internal class MenuService : IMenuService
 
     private void ShowOneMenu()
     {
-        
+        TitleMenu("Find person");
         Console.WriteLine("Write email");
-        string email = Console.ReadLine()!;
+        var email = Console.ReadLine()!;
+        
+        
+        var result = _personService.ShowOnePersonFromList(email);
 
-        if (email.Equals(_person.Email))
+        switch (result.Status)
         {
-            var result = _personService.ShowOnePersonFromList(email);
-            
-            if (result.Status == Enums.ResultStatus.SUCCEEDED)
-            {              
-                    Console.WriteLine($"{_person.FirstName}{_person.LastName}{_person.Email}{_person.PhoneNumber}{_person.CityName}");
+            case Enums.ResultStatus.SUCCEEDED:
                 
-
-            }
-
-
+                if (result.Result is List<IPerson> personList)
+                {
+                        //Skriver ej ut infomartion om personen.
+                        Console.WriteLine("##Person found##");
+                        Console.WriteLine("---------------------");
+                        Console.WriteLine($"{_person.FirstName} \n {_person.LastName} \n {_person.Email} \n {_person.PhoneNumber} \n {_person.CityName}");
+                     
+                }
+                break;
+            case Enums.ResultStatus.FAILED:
+                Console.WriteLine("##Failed##");
+              
+                break;
+            case Enums.ResultStatus.ALREADY_EXIST:
+                Console.WriteLine("##Person already exist##");
+               
+                break;
+            default:
+                Console.WriteLine("##Something went wrong, try again!##");
+                
+                break;
         }
-       
-        else
-        {
-            Console.WriteLine("Email adress does not exist");
-        }
-
+        
 
         PressAnyKey();
 
@@ -164,7 +196,7 @@ internal class MenuService : IMenuService
     private void ShowAllMenu() 
     {
         TitleMenu("Show all persons on list");
-        
+
         var result = _personService.ShowAllPersonsFromList();
         if (result.Status == Enums.ResultStatus.SUCCEEDED)
         {
@@ -172,7 +204,7 @@ internal class MenuService : IMenuService
             {
                 foreach (var person in personList)
                 {
-                    Console.WriteLine($"{person.FirstName}{person.LastName}{person.Email}{person.PhoneNumber}{person.CityName}");
+                    Console.WriteLine($"{person.FirstName}\n{person.LastName}\n{person.Email}\n{person.PhoneNumber}\n{person.CityName}");
                 }
             }
             

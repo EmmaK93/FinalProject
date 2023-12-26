@@ -11,6 +11,9 @@ public class Person : IPerson
     public string? StreetName { get; set; }
     public int? PostalCode { get; set; }
     public string CityName { get; set; } = null!;
+    
+
+ 
 
 
 }
