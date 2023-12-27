@@ -8,7 +8,7 @@ namespace AdressBook.Services;
 internal class MenuService : IMenuService
 {
     private readonly IPersonService _personService = new PersonService();
-    private readonly IPerson _person = new Person();
+    private readonly Person _person = new Person();
     
     
     internal void TitleMenu(string Title)
@@ -65,7 +65,7 @@ internal class MenuService : IMenuService
     }
     private void AddMenu()
     {
-        IPerson person = new Person();
+        Person person = new Person();
         
 
         TitleMenu("Add person to list");
@@ -177,9 +177,9 @@ internal class MenuService : IMenuService
         {
             case Enums.ResultStatus.SUCCEEDED:
                 //if-sats för att skriva ut information om personen
-                if (result.Result is List<IPerson> personList)
+                if (result.Result is List<Person> personList)
                 {
-                    IPerson person = personList.Find(x => x.Email == email)!; 
+                    Person person = personList.Find(x => x.Email == email)!; 
                     
                     Console.WriteLine("##Person found##");
                     Console.WriteLine("---------------------");
@@ -195,6 +195,10 @@ internal class MenuService : IMenuService
                 Console.WriteLine("##Person already exist##");
                
                 break;
+            case Enums.ResultStatus.NOT_FOUND:
+                Console.WriteLine("##Email does not exist##");
+                break;
+
             default:
                 Console.WriteLine("##Something went wrong, try again!##");
                 
@@ -213,7 +217,7 @@ internal class MenuService : IMenuService
         var result = _personService.ShowAllPersonsFromList();
         if (result.Status == Enums.ResultStatus.SUCCEEDED)
         {
-            if (result.Result is List<IPerson> personList) 
+            if (result.Result is List<Person> personList) 
             {
                 foreach (var person in personList)
                 {

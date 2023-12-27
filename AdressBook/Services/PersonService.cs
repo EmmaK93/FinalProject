@@ -18,12 +18,12 @@ namespace AdressBook.Services;
 
 internal class PersonService : IPersonService
 {
-    private static List<IPerson> _personList= [];
+    private static List<Person> _personList= [];
     private readonly FileService _fileService = new FileService(@"C:\Education\CSharp\FinalProject\content.json");
 
  
         
-    public IServiceResult AddPersonToList(IPerson person)
+    public IServiceResult AddPersonToList(Person person)
     {
         IServiceResult respons = new ServiceResult();
        
@@ -58,22 +58,23 @@ internal class PersonService : IPersonService
         return respons;
     }
 
-    public IServiceResult DeletePersonFromList(IPerson person, string email)
+    public IServiceResult DeletePersonFromList(Person person, string email)
     {
         IServiceResult respons = new ServiceResult();
         
         try
         {
             var content = _fileService.GetContentFromFile();
-
+            
             GetAllPersons();
-            IPerson personToRemove = _personList.FirstOrDefault(x => x.Email == email)!;
+            Person personToRemove = _personList.FirstOrDefault(x => x.Email == email)!;
             
             if (personToRemove != null)
             {
                 _personList.Remove(personToRemove);
                 respons.Status = Enums.ResultStatus.SUCCEEDED;
-               
+                _fileService.SaveContentToFile(JsonConvert.SerializeObject(_personList));
+
             }
             else if (!(_personList.Any(X => X.Email == person.Email)))
             {
@@ -90,7 +91,7 @@ internal class PersonService : IPersonService
         return respons;
 
     }
-    public IEnumerable<IPerson> GetAllPersons()
+    public IEnumerable<Person> GetAllPersons()
     {
         IServiceResult respons = new ServiceResult();
         try
@@ -100,7 +101,7 @@ internal class PersonService : IPersonService
             var content = _fileService.GetContentFromFile();
             if (!string.IsNullOrEmpty(content)) 
             {
-                _personList = JsonConvert.DeserializeObject<List<IPerson>>(content)!;
+                _personList = JsonConvert.DeserializeObject<List<Person>>(content)!;
                 respons.Status = Enums.ResultStatus.SUCCEEDED;
             }
             if (string.IsNullOrEmpty(content)) //funkar ej
@@ -157,18 +158,18 @@ internal class PersonService : IPersonService
             GetAllPersons();
 
             bool personToFind= false;
-            foreach (Person person in _personList)
+            foreach (Person person in _personList) // stod Person istället för var innan
             {
 
               
-                if (person.Email == email)
+                if (_personList.Any(x=> x.Email == email))
                 {
                     respons.Status=Enums.ResultStatus.SUCCEEDED;
                     respons.Result = _personList;
                     personToFind = true;
 
                 }
-                else if (!(person.Email == email))
+                else if (!(_personList.Any(x => x.Email == email)))
                 {
                     respons.Status = Enums.ResultStatus.NOT_FOUND;
                     personToFind = false;

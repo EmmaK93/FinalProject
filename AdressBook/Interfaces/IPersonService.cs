@@ -5,8 +5,8 @@ namespace AdressBook.Interfaces;
 
 internal interface IPersonService
 {
-    IServiceResult AddPersonToList(IPerson person);
-    IServiceResult DeletePersonFromList(IPerson person, string email);
+    IServiceResult AddPersonToList(Person person);
+    IServiceResult DeletePersonFromList(Person person, string email);
     IServiceResult ShowAllPersonsFromList();
     IServiceResult ShowOnePersonFromList(string email);
 }
