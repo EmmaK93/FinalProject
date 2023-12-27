@@ -136,7 +136,7 @@ internal class MenuService : IMenuService
         TitleMenu("Remove a person from list");
         Console.Write("Enter E-mail:");
         string email = Console.ReadLine()!;
-        var result = _personService.DeletePersonFromList(_person, email);
+        var result = _personService.DeletePersonFromList(_person, email); //skickar lista samt input till metod i personService
 
         switch (result.Status)
         {
