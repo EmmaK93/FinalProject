@@ -221,7 +221,7 @@ internal class MenuService : IMenuService
             {
                 foreach (var person in personList)
                 {
-                    Console.WriteLine($"{person.FirstName}" + " " + $"{person.LastName}\n{person.Email}\n{person.PhoneNumber}\n{person.StreetName}\n{person.PostalCode}" + " " + $"{person.CityName}");
+                    Console.WriteLine($"{person.FirstName}" + " " + $"{person.LastName}\n{person.Email}\n{person.PhoneNumber}\n{person.StreetName}\n{person.PostalCode}" + " " + $"{person.CityName}\n\n");
                 }
             }
             

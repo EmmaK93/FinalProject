@@ -10,16 +10,4 @@ public interface IPerson
     int? PostalCode { get; set; }
     string CityName { get; set; }
 
-    public void personInfo (string firstName, string lastName, string email, int? phoneNumber, string? streetName, int? postalCode, string cityName)
-    {
-        this.FirstName = firstName;
-        this.LastName = lastName;
-        this.Email = email;
-        this.PhoneNumber = phoneNumber;
-        this.StreetName = streetName;
-        this.PostalCode = postalCode;
-        this.CityName = cityName;
-
-    }
-
 }

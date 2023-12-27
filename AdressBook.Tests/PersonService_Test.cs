@@ -13,14 +13,16 @@ public class PersonService_Test //Behöver göra/kolla om interface innan forts�
         
         Person person = new Person {FirstName="Åsa",LastName="W",Email="asa@domain.se",CityName="Gbg"};
         PersonService personService = new PersonService();
+        personService.AddPersonToList(person);
 
 
         //Act- vad ska hända
-        var result = personService.AddPersonToList(person);
+        IEnumerable<Person> result = personService.GetAllPersons();
         
         //Assert-resultatet vi ska få
         Assert.NotEmpty(personService.GetAllPersons());
-        Assert.True(((IEnumerable<Person>)result).Any());
+        Person returned_person = result.FirstOrDefault()!;
+        Assert.NotNull(returned_person);
     }
 
 

@@ -157,7 +157,7 @@ public class PersonService : IPersonService
 
             GetAllPersons();
 
-            bool personToFind= false;
+            bool personToFind= false; //testa att ta bort
             foreach (Person person in _personList) // stod Person istället för var innan
             {
 
