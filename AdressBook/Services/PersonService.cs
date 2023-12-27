@@ -42,8 +42,6 @@ internal class PersonService : IPersonService
             }
             else
             {
-                Console.WriteLine("E-mail adress already exists");
-
                 respons.Status = Enums.ResultStatus.ALREADY_EXIST;
 
             }
@@ -60,7 +58,7 @@ internal class PersonService : IPersonService
         return respons;
     }
 
-    public IServiceResult DeletePersonFromList(string email)
+    public IServiceResult DeletePersonFromList(IPerson person, string email)
     {
         IServiceResult respons = new ServiceResult();
         
@@ -69,20 +67,17 @@ internal class PersonService : IPersonService
             var content = _fileService.GetContentFromFile();
 
             GetAllPersons();
-
-            bool removed = false;
-            for (int i = 0; i < _personList.Count; i++)
+            IPerson personToRemove = _personList.FirstOrDefault(x => x.Email == email)!;
+            
+            if (personToRemove != null)
             {
-                if (_personList[i].Email == email)
-                {
-                    _personList.RemoveAt(i);
-                    Console.WriteLine("Personen har tagits bort från adressboken.");
-                    removed = true;
-                }
-                if (!removed)
-                {
-                    Console.WriteLine("Det finns ingen person med den mejladressen i adressboken.");
-                }
+                _personList.Remove(personToRemove);
+                respons.Status = Enums.ResultStatus.SUCCEEDED;
+               
+            }
+            else if (!(_personList.Any(X => X.Email == person.Email)))
+            {
+                respons.Status = Enums.ResultStatus.NOT_FOUND;
             }
 
 
@@ -108,10 +103,14 @@ internal class PersonService : IPersonService
                 _personList = JsonConvert.DeserializeObject<List<IPerson>>(content)!;
                 respons.Status = Enums.ResultStatus.SUCCEEDED;
             }
-
-            else
+            if (string.IsNullOrEmpty(content)) //funkar ej
+            {
                 Console.WriteLine("The list is empty");
                 respons.Status = Enums.ResultStatus.NOT_FOUND;
+            }
+            else
+                respons.Status=Enums.ResultStatus.FAILED;
+                
 
         }
         catch (Exception ex)
@@ -137,7 +136,6 @@ internal class PersonService : IPersonService
             }
             
             
-            
         }
         catch (Exception ex)
         { 
@@ -158,18 +156,29 @@ internal class PersonService : IPersonService
 
             GetAllPersons();
 
-            bool personToFind = false;
+            bool personToFind= false;
             foreach (Person person in _personList)
             {
+
+              
                 if (person.Email == email)
                 {
-
+                    respons.Status=Enums.ResultStatus.SUCCEEDED;
                     respons.Result = _personList;
                     personToFind = true;
+
                 }
-                if (!personToFind)
+                else if (!(person.Email == email))
                 {
-                    Console.WriteLine("Det finns ingen person med den mejladressen i adressboken.");
+                    respons.Status = Enums.ResultStatus.NOT_FOUND;
+                    personToFind = false;
+                    
+                }
+
+                else 
+                {
+                    Console.WriteLine("Gick in i else-sats");
+                    respons.Status= Enums.ResultStatus.FAILED;
                 }
 
             }

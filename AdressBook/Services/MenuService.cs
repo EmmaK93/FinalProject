@@ -25,7 +25,7 @@ internal class MenuService : IMenuService
         Console.ReadKey();
     }
 
-    public void MainMenu()
+    public void MainMenu() //meny med val som går vidare till aktuell meny
     {
         while (true)
         {
@@ -69,36 +69,48 @@ internal class MenuService : IMenuService
         
 
         TitleMenu("Add person to list");
-
+        //insamling av data för att lägga till ny person.
 
         Console.WriteLine("First name:");
         person.FirstName = Console.ReadLine()!;
+
         Console.WriteLine("\nLast name:");
         person.LastName = Console.ReadLine()!;
+
         Console.WriteLine("\nE-mail:");
         person.Email = Console.ReadLine()!; 
+        //Konverterar console readline så att det kan lagras som stringvärde.
         Console.WriteLine("\nPhone number:");
-        bool _number = int.TryParse(Console.ReadLine()!, out int _numberConvert);
-        if (_number == true)
+        string input = Console.ReadLine()!;
+        if(int.TryParse(input, out int number)) //Använder tryParse för att inte systemet ska krascha.
         {
-            var postal = _number.ToString();
-            person.PhoneNumber = _numberConvert;
+            person.PhoneNumber = number;
+        }
+        else
+        {
+            person.PhoneNumber = null!;
         }
         Console.WriteLine("\nStreet name:");
         person.StreetName = Console.ReadLine()!;
+
+        //testade med bool-värde istället
         Console.WriteLine("\nPostal code:");
         bool _postal = int.TryParse(Console.ReadLine()!, out int _postalConvert);
         if (_postal == true) 
         {
-           var postal= _postal.ToString();
+            // var postal= _postal.ToString();
             person.PostalCode = _postalConvert;
+        }
+        else
+        {
+             person.PostalCode = null!;
         }
         Console.WriteLine("\nCity name:");
         person.CityName = Console.ReadLine()!;
 
-        var result = _personService.AddPersonToList(person);
+        var result = _personService.AddPersonToList(person); //skickar resultat till metod i personService
 
-        switch (result.Status)
+        switch (result.Status) //Meny efter statuskod i metod i personservice
         {
             case Enums.ResultStatus.SUCCEEDED:
                 Console.WriteLine("##Added to list!##");
@@ -124,20 +136,20 @@ internal class MenuService : IMenuService
         TitleMenu("Remove a person from list");
         Console.Write("Enter E-mail:");
         string email = Console.ReadLine()!;
-        var result = _personService.DeletePersonFromList(email);
+        var result = _personService.DeletePersonFromList(_person, email);
 
         switch (result.Status)
         {
             case Enums.ResultStatus.SUCCEEDED:
-                Console.WriteLine("##Person deleted from list##");
+                Console.WriteLine("##Person removed from list##");
                                
                 break;
             case Enums.ResultStatus.FAILED:
                 Console.WriteLine("##Failed##");
                 
                 break;
-            case Enums.ResultStatus.ALREADY_EXIST:
-                Console.WriteLine("##Person already exist##");
+            case Enums.ResultStatus.NOT_FOUND:
+                Console.WriteLine("##Person does not exist##");
                 
                 break;
             default:
@@ -164,13 +176,14 @@ internal class MenuService : IMenuService
         switch (result.Status)
         {
             case Enums.ResultStatus.SUCCEEDED:
-                
+                //if-sats för att skriva ut information om personen
                 if (result.Result is List<IPerson> personList)
                 {
-                        //Skriver ej ut infomartion om personen.
-                        Console.WriteLine("##Person found##");
-                        Console.WriteLine("---------------------");
-                        Console.WriteLine($"{_person.FirstName} \n {_person.LastName} \n {_person.Email} \n {_person.PhoneNumber} \n {_person.CityName}");
+                    IPerson person = personList.Find(x => x.Email == email)!; 
+                    
+                    Console.WriteLine("##Person found##");
+                    Console.WriteLine("---------------------");
+                    Console.WriteLine($"{person.FirstName}"+" "+$"{person.LastName}\n{person.Email}\n{person.PhoneNumber}\n{person.StreetName}\n{person.PostalCode}"+" "+$"{person.CityName}");
                      
                 }
                 break;
@@ -204,10 +217,14 @@ internal class MenuService : IMenuService
             {
                 foreach (var person in personList)
                 {
-                    Console.WriteLine($"{person.FirstName}\n{person.LastName}\n{person.Email}\n{person.PhoneNumber}\n{person.CityName}");
+                    Console.WriteLine($"{person.FirstName}" + " " + $"{person.LastName}\n{person.Email}\n{person.PhoneNumber}\n{person.StreetName}\n{person.PostalCode}" + " " + $"{person.CityName}");
                 }
             }
             
+        }
+        else if (result.Status == Enums.ResultStatus.NOT_FOUND)
+        {
+            Console.WriteLine("Ingen lista hittades");
         }
 
         PressAnyKey();
