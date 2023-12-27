@@ -16,7 +16,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace AdressBook.Services;
 
-internal class PersonService : IPersonService
+public class PersonService : IPersonService
 {
     private static List<Person> _personList= [];
     private readonly FileService _fileService = new FileService(@"C:\Education\CSharp\FinalProject\content.json");
