@@ -4,8 +4,6 @@ using AdressBook.Services;
 using Newtonsoft.Json;
 using System.Text.Json;
 
-//var contentFile = new FileService(@"C:\Education\CSharp\FinalProject\content.json");
+IMenuService menuService = new MenuService(); //Initerar Menuservice
 
-IMenuService menuService = new MenuService();
-
-menuService.MainMenu();
+menuService.MainMenu(); //Anropar metoden MainMenu

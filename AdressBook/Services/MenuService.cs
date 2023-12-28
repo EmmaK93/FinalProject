@@ -68,8 +68,8 @@ internal class MenuService : IMenuService
         Person person = new Person();
         
 
-        TitleMenu("Add person to list");
-        //insamling av data för att lägga till ny person.
+        TitleMenu("Add person to list");         //insamling av data för att lägga till ny person.
+
 
         Console.WriteLine("First name:");
         person.FirstName = Console.ReadLine()!;
@@ -79,6 +79,7 @@ internal class MenuService : IMenuService
 
         Console.WriteLine("\nE-mail:");
         person.Email = Console.ReadLine()!; 
+        
         //Konverterar console readline så att det kan lagras som stringvärde.
         Console.WriteLine("\nPhone number:");
         string input = Console.ReadLine()!;
@@ -98,7 +99,7 @@ internal class MenuService : IMenuService
         bool _postal = int.TryParse(Console.ReadLine()!, out int _postalConvert);
         if (_postal == true) 
         {
-            // var postal= _postal.ToString();
+            
             person.PostalCode = _postalConvert;
         }
         else
@@ -117,7 +118,6 @@ internal class MenuService : IMenuService
                 break;
             case Enums.ResultStatus.FAILED:
                 Console.WriteLine("##Failed to add to list##");
-                Console.WriteLine("See error message ::" + result.Result.ToString());
                 break;
             case Enums.ResultStatus.ALREADY_EXIST: 
                 Console.WriteLine("##Person already exist##");
@@ -134,11 +134,11 @@ internal class MenuService : IMenuService
     {
         
         TitleMenu("Remove a person from list");
-        Console.Write("Enter E-mail:");
-        string email = Console.ReadLine()!;
+        Console.Write("Enter E-mail: ");
+        string email = Console.ReadLine()!; //Lagrar input i variabel som kan användas för att skickas till metod
         var result = _personService.DeletePersonFromList(_person, email); //skickar lista samt input till metod i personService
 
-        switch (result.Status)
+        switch (result.Status) //Switch istället för if-sats för att ge feedback till användare
         {
             case Enums.ResultStatus.SUCCEEDED:
                 Console.WriteLine("##Person removed from list##");
@@ -167,7 +167,7 @@ internal class MenuService : IMenuService
     private void ShowOneMenu()
     {
         TitleMenu("Find person");
-        Console.WriteLine("Write email");
+        Console.Write("Write email: ");
         var email = Console.ReadLine()!;
         
         
@@ -228,7 +228,7 @@ internal class MenuService : IMenuService
         }
         else if (result.Status == Enums.ResultStatus.NOT_FOUND)
         {
-            Console.WriteLine("Ingen lista hittades");
+            Console.WriteLine("##No persons in list##");
         }
 
         PressAnyKey();
