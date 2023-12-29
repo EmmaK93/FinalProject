@@ -1,6 +1,7 @@
 ﻿using AdressBook.Interfaces;
 using AdressBook.Models;
 using AdressBook.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace AdressBook.Tests;
 
@@ -13,10 +14,10 @@ public class PersonService_Test //Behöver göra/kolla om interface innan forts�
         
         Person person = new Person {FirstName="Åsa",LastName="W",Email="asa@domain.se",CityName="Gbg"};
         PersonService personService = new PersonService();
-        personService.AddPersonToList(person);
 
 
         //Act- vad ska hända
+        personService.AddPersonToList(person);
         IEnumerable<Person> result = personService.GetAllPersons();
         
         //Assert-resultatet vi ska få
@@ -25,6 +26,22 @@ public class PersonService_Test //Behöver göra/kolla om interface innan forts�
         Assert.NotNull(returned_person);
     }
 
+    [Fact]
+    public void RemovePersonShould_FindPersonInList_ThenRemovePersonFromList()
+    {
+        //Arrange
+        PersonService personService = new PersonService();
+        var personList = new Person();
+        personList.Email = "asa@domain.se";
+
+
+        //Act
+        personService.DeletePersonFromList(personList, "asa@domain.se");
+        IEnumerable<Person> result = personService.GetAllPersons();
+
+        //Assert
+        Assert.DoesNotContain(personList.ToString()!, personList.Email);
+    }   
 
 
 }
