@@ -91,8 +91,8 @@ public class PersonService : IPersonService
         return respons;
 
     }
-    /* Vet att Hans i föreläsningen använde detta (IEnumerablelista) istället för att ha en metod som visade alla. I framtiden hade jag nog gjort detta med men använde den mer nu som en funktion för att kunna hämta listan och konvertera från json. Så funktionen borde skrivits om så det blir mer tydligt hur den används. */
-    public IEnumerable<Person> GetAllPersons() //En lista som ej går att korrigera via programdelen.
+    
+    public IEnumerable<Person> GetAllPersons() // En läsbar lista som ej går att korrigera i program-filen
     {
         IServiceResult respons = new ServiceResult();
         try

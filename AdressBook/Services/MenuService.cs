@@ -24,7 +24,9 @@ internal class MenuService : IMenuService
         Console.WriteLine("Press Any key to continue!");
         Console.ReadKey();
     }
-
+    /// <summary>
+    /// Main menu shows different choises for user to choose from
+    /// </summary>
     public void MainMenu() //meny med val som går vidare till aktuell meny
     {
         while (true)
@@ -63,8 +65,12 @@ internal class MenuService : IMenuService
 
 
     }
+    /// <summary>
+    /// Menu for adding a person to list with input from user
+    /// </summary>
     private void AddMenu()
     {
+        
         Person person = new Person();
         
 
@@ -129,7 +135,9 @@ internal class MenuService : IMenuService
         PressAnyKey();
 
     }
-
+    /// <summary>
+    /// Menu for deleting person from list, user input for email is required
+    /// </summary>
     private void RemoveMenu()
     {
         
@@ -163,7 +171,9 @@ internal class MenuService : IMenuService
         PressAnyKey();
 
     }
-
+    /// <summary>
+    /// Menu for showing one person in list, user input of email is required
+    /// </summary>
     private void ShowOneMenu()
     {
         TitleMenu("Find person");
@@ -209,7 +219,9 @@ internal class MenuService : IMenuService
         PressAnyKey();
 
     }
-
+    /// <summary>
+    /// Menu for show all persons in list
+    /// </summary>
     private void ShowAllMenu() 
     {
         TitleMenu("Show all persons on list");
@@ -233,7 +245,9 @@ internal class MenuService : IMenuService
 
         PressAnyKey();
     }
-
+    /// <summary>
+    /// Menu for ending application. Input from user is required.
+    /// </summary>
     private void ExitProgram()
     {
         TitleMenu("Exit program");
